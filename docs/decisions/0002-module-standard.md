@@ -1,4 +1,4 @@
-# ADR 0002: Unified Plugin Interface & Lifecycle Contract
+# ADR 0002: Unified Module Standard & Lifecycle Contract
 
 * **Status:** Approved
 * **Author:** NexGen Tech Architecture Team
