@@ -13,13 +13,12 @@ This repository is organized as a modular infrastructure framework:
 ```
 nexgen_cloud_platform/
 ├── README.md              # Project overview and roadmap
-├── core/                  # Core orchestration engines
+├── core/                  # Core orchestration engines (NCP Kernel)
+│   ├── engine/            # Central orchestration engine and lifecycle controller
 │   ├── installer/         # Host OS setup and VM provisioning engine
 │   ├── loader/            # Module loader and dependency resolver
 │   ├── logger/            # Platform logging and report generation
-│   ├── module-engine/     # Module manager and lifecycle orchestrator
 │   ├── provider-engine/   # Cloud provider driver/API abstraction
-│   ├── template-engine/   # Project boilerplate/framework generator
 │   ├── utils/             # Core utility helpers and CLI extensions
 │   └── validator/         # Sanity validation and verification engine
 ├── cli/                   # Internal command-line interface (e.g., `nexgen` CLI)
@@ -73,15 +72,11 @@ Our goal is to treat infrastructure as code (IaC) to enforce a single, secure, a
 
 ## 🗺️ Implementation Roadmap
 
-The development of NCP follows these structured phases:
+The development of NCP is structured around the following release milestones:
 
-1. **Phase 1 — Foundation:** Create a production-grade Ubuntu base (Automatic updates, swap space, SSH hardening, UFW firewall, Fail2Ban).
-2. **Phase 2 — Container Platform:** Docker and Docker Compose environment configuration.
-3. **Phase 3 — Networking:** Reverse proxying using Nginx, Let's Encrypt SSL auto-renewal, compression, and security headers.
-4. **Phase 4 — Application Framework:** Setting up `/opt/nexgen/{apps,shared,logs,backups,scripts,docker,nginx}` filesystem layout.
-5. **Phase 5 — CI/CD:** GitHub Actions runner integration and SSH deploy scripts with health checks.
-6. **Phase 6 — Observability:** Server metrics monitoring, Docker container health, and SSL certificate expiration alerts.
-7. **Phase 7 — Disaster Recovery:** Daily encrypted database backups and retention policies.
-8. **Phase 8 — Internal CLI:** Develop the `nexgen` CLI to bootstrap, deploy, and monitor environments.
-9. **Phase 9 — The "ICN Test":** Validation checklist to match physical/VPS server specs with our reference environments.
-10. **Phase 10 — The Future:** Hosting platform layer capable of managing multi-tenant client deployments.
+- **v0.1-alpha (Module Discovery):** Module Discovery Engine + Metadata Parser + `ncp doctor` (zero-touch validation).
+- **v0.1-beta (Installer Engine):** Engine Orchestrator + Logging Engine + Validator.
+- **v0.1.0 (Foundation Core):** Hardened Ubuntu OS base configuration (Git, Curl, Docker, Firewall, Fail2Ban, SSH).
+- **v0.2.0 (Databases & Runtimes):** Configuration modules for runtimes (Node, Python) and databases (Postgres, Mongo, Redis).
+- **v0.3.0 (Templates):** Application templates deployment (React, Vue, Laravel, FastAPI).
+- **v0.4.0 (Providers):** Target provider drivers (GCP first, then ICN, AWS, Local).

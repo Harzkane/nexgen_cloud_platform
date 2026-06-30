@@ -11,42 +11,29 @@ The NexGen Cloud Platform (NCP) is built around a modular architecture composed 
                        │     NCP CLI Engine      │
                        └────────────┬────────────┘
                                     │
-         ┌──────────────────────────┼──────────────────────────┐
-         ▼                          ▼                          ▼
-┌─────────────────┐        ┌─────────────────┐        ┌─────────────────┐
-│Installer Engine │        │  Module Loader  │        │Provider Engine  │
-└─────────────────┘        └─────────────────┘        └─────────────────┘
-         │                          │                          │
-         ▼                          ▼                          ▼
-┌─────────────────┐        ┌─────────────────┐        ┌─────────────────┐
-│Validator Engine │        │ Logging Engine  │        │Template Engine  │
-└─────────────────┘        └─────────────────┘        └─────────────────┘
+                                    ▼
+                       ┌─────────────────────────┐
+                       │   Core Engine Kernel    │
+                       │     (core/engine/)      │
+                       └────────────┬────────────┘
+                                    │
+         ┌──────────────┬───────────┼───────────┬──────────────┐
+         ▼              ▼           ▼           ▼              ▼
+┌──────────────┐ ┌──────────┐ ┌───────────┐ ┌───────────┐ ┌──────────┐
+│  Installer   │ │  Loader  │ │ Validator │ │  Logger   │ │  Utils   │
+│(installer/)  │ │(loader/) │ │(validator)│ │ (logger/) │ │ (utils/) │
+└──────────────┘ └──────────┘ └───────────┘ └───────────┘ └──────────┘
 ```
 
-### 1. CLI Engine (`cli/`)
-- Acts as the entrypoint for developers and administrators.
-- Parses user input and delegates commands to the corresponding Core Engines.
-- Provides user-friendly output and standard reporting formats.
+### NCP Kernel Components
 
-### 2. Installer Engine (`core/installer/`)
-- Responsible for configuring the bare OS, including base packages, users, security (SSH, UFW, Fail2Ban), and container runtime utilities (Docker).
-- Prepares the server directory structures.
-
-### 3. Module Loader & Engine (`core/loader/` & `core/module-engine/`)
-- Parses module metadata (`metadata.yml`), resolves module dependencies, and dynamically executes standard hooks (`install()`, `verify()`, `status()`, `uninstall()`).
-
-### 4. Provider Engine (`core/provider-engine/`)
-- Abstracts API and provisioning actions for specific hosting environments (Google Cloud, ICN, AWS, Azure, Hetzner, Local).
-- Standardizes host discovery and VM access.
-
-### 5. Template Engine (`core/template-engine/`)
-- Scaffolds standardized directory structures and templates for new application deployments (Node, React, Laravel, etc.) inside the system directory.
-
-### 6. Validator Engine (`core/validator/`)
-- Performs health verification, checks configs, validates SSL status, and runs check tests to confirm the server matches the target NCP baseline specification.
-
-### 7. Logging Engine (`core/logger/`)
-- Consolidated, structured logging utility to output execution status, failure reports, and runtime logs for all active modules.
+1. **CLI Engine (`cli/`):** The administrative command-line interface entrypoint.
+2. **Core Orchestration Engine (`core/engine/`):** The orchestrator orchestrating all platform operations. It coordinates discovery, validation, provisioning, and logging.
+3. **Installer Engine (`core/installer/`):** Orchestrates the baseline system installation workflows (packages, OS configuration, security hardening).
+4. **Module Loader (`core/loader/`):** Dynamically scans, discovers, parses plugin configurations (`metadata.yml`), and builds module dependency graphs.
+5. **Validator Engine (`core/validator/`):** Conducts pre-flight environment validations (OS type, active internet connection, admin privileges, existing packages, dependency satisfaction).
+6. **Logging Engine (`core/logger/`):** Outputs structured execution status, logs, and installation reports.
+7. **Utilities Engine (`core/utils/`):** Shared internal helper scripts and CLI extensions.
 
 ---
 
