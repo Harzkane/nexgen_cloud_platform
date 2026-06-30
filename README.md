@@ -15,9 +15,12 @@ nexgen_cloud_platform/
 ├── README.md              # Project overview and roadmap
 ├── core/                  # Core orchestration engines
 │   ├── installer/         # Host OS setup and VM provisioning engine
+│   ├── loader/            # Module loader and dependency resolver
+│   ├── logger/            # Platform logging and report generation
 │   ├── module-engine/     # Module manager and lifecycle orchestrator
 │   ├── provider-engine/   # Cloud provider driver/API abstraction
 │   ├── template-engine/   # Project boilerplate/framework generator
+│   ├── utils/             # Core utility helpers and CLI extensions
 │   └── validator/         # Sanity validation and verification engine
 ├── cli/                   # Internal command-line interface (e.g., `nexgen` CLI)
 ├── docs/                  # Architecture, guides, and ADRs
@@ -34,18 +37,15 @@ nexgen_cloud_platform/
 │   ├── django/            # Django setup
 │   ├── fastapi/           # FastAPI setup
 │   └── microservices/     # Multi-container microservice skeleton
-├── modules/               # Platform modules (Docker Compose & Configurations)
-│   ├── docker/            # Docker engine and daemon configs
-│   ├── nginx/             # Reverse proxy and site configs
-│   ├── postgres/          # PostgreSQL cluster config
-│   ├── mongodb/           # MongoDB config
-│   ├── mysql/             # MySQL/MariaDB config
-│   ├── redis/             # Redis caching config
-│   ├── ssl/               # Let's Encrypt and cert renewal configurations
-│   ├── backup/            # Automatic backup and encryption scripts
-│   ├── monitoring/        # Prometheus, Grafana, alerts config
-│   ├── firewall/          # UFW and Fail2Ban security configs
-│   └── github-actions/    # CI/CD workflows and deployment configurations
+├── modules/               # Reusable modules (idempotent setup & lifecycle)
+│   ├── system/            # System tools (git, curl, build-tools, docker, nginx)
+│   ├── databases/         # Database services (postgres, mongodb, mysql, mariadb, redis)
+│   ├── security/          # Security setups (firewall, fail2ban, ssl, ssh)
+│   ├── monitoring/        # Health and status tracking (uptime, metrics, logs, alerts)
+│   ├── backup/            # Data backup tasks (filesystem, postgres, mongodb, s3)
+│   ├── ci/                # CI/CD runners (github-actions, gitlab, webhook)
+│   ├── networking/        # Routing structures (dns, reverse-proxy, load-balancer)
+│   └── runtime/           # Language runs (node, python, php, java, dotnet)
 ├── providers/             # Infrastructure provider integrations
 │   ├── google/            # Google Cloud Platform configuration
 │   ├── icn/               # ICN cloud provider configuration

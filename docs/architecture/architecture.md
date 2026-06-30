@@ -14,12 +14,12 @@ The NexGen Cloud Platform (NCP) is built around a modular architecture composed 
          ┌──────────────────────────┼──────────────────────────┐
          ▼                          ▼                          ▼
 ┌─────────────────┐        ┌─────────────────┐        ┌─────────────────┐
-│Installer Engine │        │  Module Engine  │        │Provider Engine  │
+│Installer Engine │        │  Module Loader  │        │Provider Engine  │
 └─────────────────┘        └─────────────────┘        └─────────────────┘
          │                          │                          │
          ▼                          ▼                          ▼
 ┌─────────────────┐        ┌─────────────────┐        ┌─────────────────┐
-│Validator Engine │        │Template Engine  │        │   Logs & State  │
+│Validator Engine │        │ Logging Engine  │        │Template Engine  │
 └─────────────────┘        └─────────────────┘        └─────────────────┘
 ```
 
@@ -32,9 +32,8 @@ The NexGen Cloud Platform (NCP) is built around a modular architecture composed 
 - Responsible for configuring the bare OS, including base packages, users, security (SSH, UFW, Fail2Ban), and container runtime utilities (Docker).
 - Prepares the server directory structures.
 
-### 3. Module Engine (`core/module-engine/`)
-- Manages the lifecycle of reusable application dependencies (Docker, Nginx, PostgreSQL, Redis, MongoDB, SSL).
-- Declares configurations, environment templates, and container specs for each infrastructure piece.
+### 3. Module Loader & Engine (`core/loader/` & `core/module-engine/`)
+- Parses module metadata (`metadata.yml`), resolves module dependencies, and dynamically executes standard hooks (`install()`, `verify()`, `status()`, `uninstall()`).
 
 ### 4. Provider Engine (`core/provider-engine/`)
 - Abstracts API and provisioning actions for specific hosting environments (Google Cloud, ICN, AWS, Azure, Hetzner, Local).
@@ -45,6 +44,9 @@ The NexGen Cloud Platform (NCP) is built around a modular architecture composed 
 
 ### 6. Validator Engine (`core/validator/`)
 - Performs health verification, checks configs, validates SSL status, and runs check tests to confirm the server matches the target NCP baseline specification.
+
+### 7. Logging Engine (`core/logger/`)
+- Consolidated, structured logging utility to output execution status, failure reports, and runtime logs for all active modules.
 
 ---
 
