@@ -1,0 +1,10 @@
+name: s3
+version: 0.1.0
+category: backup
+description: "NCP module: s3"
+type: module
+priority: 50
+requires: []
+supported_os:
+  - ubuntu-22.04
+  - ubuntu-24.04

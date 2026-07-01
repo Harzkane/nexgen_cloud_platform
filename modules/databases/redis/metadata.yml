@@ -1,0 +1,10 @@
+name: redis
+version: 0.1.0
+category: databases
+description: "NCP module: redis"
+type: module
+priority: 50
+requires: []
+supported_os:
+  - ubuntu-22.04
+  - ubuntu-24.04

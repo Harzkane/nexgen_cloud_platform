@@ -1,0 +1,10 @@
+name: mongodb
+version: 0.1.0
+category: backup
+description: "NCP module: mongodb"
+type: module
+priority: 50
+requires: []
+supported_os:
+  - ubuntu-22.04
+  - ubuntu-24.04
