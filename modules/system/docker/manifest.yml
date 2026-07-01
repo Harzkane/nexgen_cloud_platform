@@ -1,0 +1,97 @@
+# ============================================================
+# NexGen Cloud Platform (NCP)
+# Component Manifest
+# Schema Version: ncp.io/v1
+# ============================================================
+
+apiVersion: ncp.io/v1
+kind: Module
+
+# ------------------------------------------------------------
+# Component Identity
+# ------------------------------------------------------------
+
+id: docker
+name: docker
+displayName: Docker Engine
+
+version: 1.0.0
+status: stable
+
+category: system
+
+description: >
+  Installs and manages Docker Engine for running
+  containerized applications on supported Linux systems.
+
+maintainer: NexGen Tech
+license: MIT
+
+# ------------------------------------------------------------
+# Installation
+# ------------------------------------------------------------
+
+installOrder: 20
+
+dependencies:
+  - id: git
+    version: ">=2.0"
+
+# ------------------------------------------------------------
+# Compatibility
+# ------------------------------------------------------------
+
+compatibility:
+
+  ubuntu:
+    - "22.04"
+    - "24.04"
+
+  debian:
+    - "12"
+
+# ------------------------------------------------------------
+# Lifecycle
+# ------------------------------------------------------------
+
+lifecycle:
+
+  install:
+    script: install.sh
+    requiresSudo: true
+    timeout: 600
+
+  verify:
+    script: verify.sh
+
+  status:
+    script: status.sh
+
+  configure:
+    script: configure.sh
+
+  upgrade:
+    script: upgrade.sh
+
+  uninstall:
+    script: uninstall.sh
+
+# ------------------------------------------------------------
+# Capabilities
+# ------------------------------------------------------------
+
+capabilities:
+  - install
+  - verify
+  - configure
+  - upgrade
+  - uninstall
+
+# ------------------------------------------------------------
+# Tags
+# ------------------------------------------------------------
+
+tags:
+  - containers
+  - runtime
+  - docker

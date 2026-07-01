@@ -8,6 +8,7 @@ source "$PROJECT_ROOT/core/utils/output.sh"
 source "$PROJECT_ROOT/core/loader/modules.sh"
 source "$PROJECT_ROOT/core/loader/providers.sh"
 source "$PROJECT_ROOT/core/loader/templates.sh"
+source "$PROJECT_ROOT/core/loader/metadata.sh"
 source "$PROJECT_ROOT/core/validator/environment.sh"
 
 echo
@@ -31,7 +32,25 @@ TEMPLATE_COUNT=$(discover_templates | wc -l)
 
 info "Discovery"
 
-echo "Modules      : $MODULE_COUNT"
+# echo "Modules      : $MODULE_COUNT"
+echo
+info "Installed Module Definitions"
+
+while IFS= read -r module; do
+
+    metadata="$module/metadata.yml"
+
+    if [ -f "$metadata" ]; then
+
+        name=$(read_metadata_value "$metadata" "displayName")
+
+        version=$(read_metadata_value "$metadata" "version")
+
+        printf "  ✔ %-25s %s\n" "$name" "$version"
+
+    fi
+
+done < <(discover_modules)
 
 echo "Providers    : $PROVIDER_COUNT"
 

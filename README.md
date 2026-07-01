@@ -23,11 +23,18 @@ nexgen_cloud_platform/
 │   └── validator/         # Sanity validation and verification engine
 ├── cli/                   # Internal command-line interface (e.g., `nexgen` CLI)
 ├── docs/                  # Architecture, guides, and ADRs
-│   ├── architecture/      # High-level architecture details
+│   ├── architecture/      # High-level architecture and manifest schema
 │   ├── diagrams/          # System design diagrams
 │   ├── guides/            # Server administration and runbook guides
 │   ├── roadmap/           # Long-term platform roadmap
-│   └── decisions/         # Architectural Decision Records (ADRs)
+│   ├── decisions/         # Architectural Decision Records (ADRs)
+│   └── reference/         # Canonical platform specifications
+│       ├── manifest-schema.md  # Component manifest schema (ncp.io/v1)
+│       ├── lifecycle.md        # Lifecycle stages and hook contracts
+│       ├── component-types.md  # Supported component kinds
+│       ├── exit-codes.md       # Standard exit code definitions
+│       ├── logging.md          # Logging conventions and output format
+│       └── cli.md              # CLI command reference
 ├── templates/             # Application framework templates
 │   ├── node/              # Node.js backend boilerplate
 │   ├── react/             # React SPA setup
