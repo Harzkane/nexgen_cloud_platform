@@ -1,2 +1,28 @@
 #!/usr/bin/env bash
 # NexGen Cloud Platform (NCP) CLI Entrypoint
+
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+COMMAND="${1:-help}"
+
+case "$COMMAND" in
+    doctor)
+        "$PROJECT_ROOT/cli/commands/doctor.sh"
+        ;;
+    version)
+        "$PROJECT_ROOT/cli/commands/version.sh"
+        ;;
+    help)
+        "$PROJECT_ROOT/cli/commands/help.sh"
+        ;;
+    *)
+        echo "Unknown command: $COMMAND"
+        echo
+        "$PROJECT_ROOT/cli/commands/help.sh"
+        exit 1
+        ;;
+esac
