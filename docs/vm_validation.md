@@ -124,11 +124,28 @@ We will simulate a configuration drift to verify the Reconciler:
 
 ---
 
-## ⚠️ Things to Avoid Initially
-As recommended by the reviewer, do **not** initially test:
-* Rollback by intentionally breaking Docker.
-* Service deletion.
-* User creation.
-* Uninstall logic.
-
 Focus first on establishing the basic install, drift-check, and reconciliation flow.
+
+---
+
+## 🛠️ Retrospective: GCE VM Initial Verification Fixes
+
+During the first live run on the VM, two critical system level edge-cases were identified and fixed:
+
+### 1. The dpkg -s False Positive Bug
+* **Issue**: Manually removing a package using `apt remove` does not purge its metadata. Thus, `dpkg -s <pkg>` still returns exit status `0`. This caused the installer to report git was already installed even after manual removal.
+* **Fix**: Updated `core/platform/packages.sh` to explicitly search for standard active status:
+  ```bash
+  dpkg -s "$pkg" 2>/dev/null | grep -q "Status: install ok installed"
+  ```
+
+### 2. State Permissions Denied
+* **Issue**: Sudo-escalated scripts running as `root` wrote components' state files to `workspace/state/` with root ownership, blocking standard users (`codewithharz`) from reading/writing them.
+* **Fix**: Implemented **permission auto-healing** inside `core/state/state.sh`. Whenever the state manager writes a state file as `root` (UID 0), it automatically chowns it back to the parent directory's non-root owner and resets file permissions to `664`.
+
+### 3. Note on Git Removal Drift testing
+* **Note**: When you manually remove `git` (`sudo apt remove -y git`) to test drift detection, you won't be able to run `git pull` from the shell. To pull new updates, temporarily restore the git binary by running:
+  ```bash
+  sudo apt install -y git
+  git pull origin main
+  ```
