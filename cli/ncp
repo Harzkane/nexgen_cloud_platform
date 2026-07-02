@@ -11,13 +11,37 @@ COMMAND="${1:-help}"
 
 case "$COMMAND" in
     doctor)
-        "$PROJECT_ROOT/cli/commands/doctor.sh"
+        "$PROJECT_ROOT/cli/commands/doctor.sh" "${@:2}"
+        ;;
+    plan)
+        "$PROJECT_ROOT/cli/commands/plan.sh" "${@:2}"
+        ;;
+    install)
+        "$PROJECT_ROOT/cli/commands/install.sh" "${@:2}"
+        ;;
+    status)
+        "$PROJECT_ROOT/cli/commands/status.sh" "${@:2}"
+        ;;
+    verify)
+        "$PROJECT_ROOT/cli/commands/verify.sh" "${@:2}"
+        ;;
+    configure)
+        "$PROJECT_ROOT/cli/commands/configure.sh" "${@:2}"
+        ;;
+    list)
+        "$PROJECT_ROOT/cli/commands/list.sh" "${@:2}"
+        ;;
+    info)
+        "$PROJECT_ROOT/cli/commands/info.sh" "${@:2}"
+        ;;
+    operations)
+        "$PROJECT_ROOT/cli/commands/operations.sh" "${@:2}"
         ;;
     version)
-        "$PROJECT_ROOT/cli/commands/version.sh"
+        "$PROJECT_ROOT/cli/commands/version.sh" "${@:2}"
         ;;
     help)
-        "$PROJECT_ROOT/cli/commands/help.sh"
+        "$PROJECT_ROOT/cli/commands/help.sh" "${@:2}"
         ;;
     *)
         echo "Unknown command: $COMMAND"

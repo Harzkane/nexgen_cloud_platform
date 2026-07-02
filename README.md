@@ -1,89 +1,578 @@
 # NexGen Cloud Platform (NCP)
 
-NexGen Cloud Platform (NCP) is an internal, standardized infrastructure platform designed to deploy, secure, configure, and monitor services across all NexGen environments (including **AfriX**, **AfriRail**, **KaliSukaar**, and client hostings). 
+> Build once. Deploy anywhere. Manage everything.
 
-NCP transforms a fresh Ubuntu VM into a production-grade environment with zero manual steps, consistent configurations, and full observability.
+NexGen Cloud Platform (NCP) is a provider-agnostic infrastructure platform developed by NexGen Tech to provision, configure, secure, deploy, and manage production servers consistently across multiple cloud providers.
+
+Rather than being a collection of installation scripts, NCP is a modular platform driven by manifests, lifecycle hooks, and reusable infrastructure components.
+
+Its mission is simple:
+
+> Transform any supported Ubuntu server into a production-ready environment with a single command.
 
 ---
 
-## 📁 Repository Structure
+# Why NCP?
 
-This repository is organized as a modular infrastructure framework:
+Modern deployments often become tightly coupled to a specific cloud provider or hosting platform.
 
-```
+NCP removes that dependency.
+
+Whether the server lives on:
+
+- Google Cloud
+- ICN Cloud
+- AWS
+- Azure
+- Hetzner
+- DigitalOcean
+- Local VM
+- Bare Metal
+
+the deployment workflow remains identical.
+
+---
+
+# Core Philosophy
+
+NCP is built around a few core principles.
+
+- Infrastructure as Code
+- Provider Agnostic
+- Manifest Driven
+- Modular
+- Declarative
+- Idempotent
+- Secure by Default
+- Observable
+- Testable
+- Extensible
+
+---
+
+# Repository Structure
+
+```text
 nexgen_cloud_platform/
-├── README.md              # Project overview and roadmap
-├── core/                  # Core orchestration engines (NCP Kernel)
-│   ├── engine/            # Central orchestration engine and lifecycle controller
-│   ├── installer/         # Host OS setup and VM provisioning engine
-│   ├── loader/            # Module loader and dependency resolver
-│   ├── logger/            # Platform logging and report generation
-│   ├── provider-engine/   # Cloud provider driver/API abstraction
-│   ├── utils/             # Core utility helpers and CLI extensions
-│   └── validator/         # Sanity validation and verification engine
-├── cli/                   # Internal command-line interface (e.g., `nexgen` CLI)
-├── docs/                  # Architecture, guides, and ADRs
-│   ├── architecture/      # High-level architecture and manifest schema
-│   ├── diagrams/          # System design diagrams
-│   ├── guides/            # Server administration and runbook guides
-│   ├── roadmap/           # Long-term platform roadmap
-│   ├── decisions/         # Architectural Decision Records (ADRs)
-│   └── reference/         # Canonical platform specifications
-│       ├── manifest-schema.md  # Component manifest schema (ncp.io/v1)
-│       ├── lifecycle.md        # Lifecycle stages and hook contracts
-│       ├── component-types.md  # Supported component kinds
-│       ├── exit-codes.md       # Standard exit code definitions
-│       ├── logging.md          # Logging conventions and output format
-│       └── cli.md              # CLI command reference
-├── templates/             # Application framework templates
-│   ├── node/              # Node.js backend boilerplate
-│   ├── react/             # React SPA setup
-│   ├── vue/               # Vue SPA setup
-│   ├── laravel/           # Laravel setup
-│   ├── django/            # Django setup
-│   ├── fastapi/           # FastAPI setup
-│   └── microservices/     # Multi-container microservice skeleton
-├── modules/               # Reusable modules (idempotent setup & lifecycle)
-│   ├── system/            # System tools (git, curl, build-tools, docker, nginx)
-│   ├── databases/         # Database services (postgres, mongodb, mysql, mariadb, redis)
-│   ├── security/          # Security setups (firewall, fail2ban, ssl, ssh)
-│   ├── monitoring/        # Health and status tracking (uptime, metrics, logs, alerts)
-│   ├── backup/            # Data backup tasks (filesystem, postgres, mongodb, s3)
-│   ├── ci/                # CI/CD runners (github-actions, gitlab, webhook)
-│   ├── networking/        # Routing structures (dns, reverse-proxy, load-balancer)
-│   └── runtime/           # Language runs (node, python, php, java, dotnet)
-├── providers/             # Infrastructure provider integrations
-│   ├── google/            # Google Cloud Platform configuration
-│   ├── icn/               # ICN cloud provider configuration
-│   ├── aws/               # Amazon Web Services configuration
-│   ├── azure/             # Microsoft Azure configuration
-│   ├── hetzner/           # Hetzner Cloud configuration
-│   └── local/             # Local development / bare-metal environment
-├── scripts/               # Helper and utility scripts
-├── examples/              # Reference implementation examples
-├── tests/                 # Infrastructure and sanity verification checks
-└── assets/                # Logos, images, and static resources
+
+├── README.md
+├── VERSION
+├── CHANGELOG.md
+├── LICENSE
+
+├── cli/
+│   ├── ncp
+│   ├── commands/
+│   └── completion/
+
+├── core/
+│   ├── discovery/
+│   ├── engine/
+│   ├── installer/
+│   ├── logger/
+│   ├── utils/
+│   └── validator/
+
+├── manifest/
+│   ├── loader.sh
+│   ├── parser.sh
+│   └── validator.sh
+
+├── modules/
+├── providers/
+├── templates/
+
+├── docs/
+├── tests/
+├── examples/
+├── scripts/
+├── assets/
+└── workspace/
 ```
 
 ---
 
-## 🚀 The Vision
+# NCP Kernel
 
-Our goal is to treat infrastructure as code (IaC) to enforce a single, secure, and production-ready standard for every single VM we spin up:
-- **Zero Manual Steps:** A single command initializes, secures, and configures the environment.
-- **Predictable Abstractions:** All apps run inside containerized stacks under `/opt/nexgen`.
-- **Automated CI/CD:** Pushing code to GitHub automatically builds, checks health, and deploys.
-- **Robust Disaster Recovery:** Daily backups are compressed, encrypted, and uploaded to off-site storage.
+The platform is composed of several independent engines.
+
+```text
+                NCP Kernel
+
+              CLI (ncp)
+
+                    │
+
+                    ▼
+
+         Discovery Engine
+
+                    │
+
+                    ▼
+
+          Manifest Engine
+
+                    │
+
+                    ▼
+
+        Validation Engine
+
+                    │
+
+                    ▼
+
+      Dependency Resolver
+
+                    │
+
+                    ▼
+
+        Lifecycle Engine
+
+                    │
+
+                    ▼
+
+          Installer Engine
+
+                    │
+
+                    ▼
+
+          Logging Engine
+```
+
+Each engine has one responsibility.
+
+This keeps the platform modular and easy to extend.
 
 ---
 
-## 🗺️ Implementation Roadmap
+# Platform Architecture
 
-The development of NCP is structured around the following release milestones:
+NCP does not hardcode infrastructure logic.
 
-- **v0.1-alpha (Module Discovery):** Module Discovery Engine + Metadata Parser + `ncp doctor` (zero-touch validation).
-- **v0.1-beta (Installer Engine):** Engine Orchestrator + Logging Engine + Validator.
-- **v0.1.0 (Foundation Core):** Hardened Ubuntu OS base configuration (Git, Curl, Docker, Firewall, Fail2Ban, SSH).
-- **v0.2.0 (Databases & Runtimes):** Configuration modules for runtimes (Node, Python) and databases (Postgres, Mongo, Redis).
-- **v0.3.0 (Templates):** Application templates deployment (React, Vue, Laravel, FastAPI).
-- **v0.4.0 (Providers):** Target provider drivers (GCP first, then ICN, AWS, Local).
+Instead, every component describes itself through a manifest.
+
+```text
+Module
+
+↓
+
+manifest.yml
+
+↓
+
+Discovery Engine
+
+↓
+
+Manifest Parser
+
+↓
+
+Manifest Validator
+
+↓
+
+Dependency Resolver
+
+↓
+
+Lifecycle Executor
+
+↓
+
+Installation
+```
+
+Adding a new module does not require modifying the Core Engine.
+
+Simply place a new module inside `modules/` with a valid `manifest.yml`.
+
+NCP automatically discovers it.
+
+---
+
+# Component Types
+
+NCP currently supports three component types.
+
+## Modules
+
+Reusable infrastructure components.
+
+Examples:
+
+- Docker
+- Git
+- Nginx
+- PostgreSQL
+- Redis
+- Firewall
+
+---
+
+## Providers
+
+Infrastructure drivers.
+
+Examples:
+
+- Google Cloud
+- ICN
+- AWS
+- Azure
+- Hetzner
+- Local
+
+---
+
+## Templates
+
+Application deployment templates.
+
+Examples:
+
+- Node.js
+- React
+- Vue
+- Laravel
+- Django
+- FastAPI
+- Microservices
+
+---
+
+# Module Lifecycle
+
+Every module follows the exact same lifecycle.
+
+```text
+manifest.yml
+
+↓
+
+discover
+
+↓
+
+validate
+
+↓
+
+dependency resolution
+
+↓
+
+install
+
+↓
+
+verify
+
+↓
+
+configure
+
+↓
+
+status
+
+↓
+
+upgrade
+
+↓
+
+uninstall
+```
+
+This standardized lifecycle guarantees predictable deployments across every module.
+
+---
+
+# Manifest Driven Architecture
+
+Every component inside NCP contains a `manifest.yml`.
+
+Example:
+
+```yaml
+apiVersion: ncp.io/v1
+
+kind: Module
+
+name: docker
+
+displayName: Docker Engine
+
+version: 1.0.0
+```
+
+The manifest describes:
+
+- metadata
+- dependencies
+- lifecycle hooks
+- supported operating systems
+- capabilities
+- execution priority
+
+The Core Engine never contains Docker-specific logic.
+
+Instead, it reads the manifest and executes the lifecycle dynamically.
+
+---
+
+# Current Repository Layout
+
+The platform currently contains:
+
+## CLI
+
+- doctor
+- version
+- help
+
+---
+
+## Core
+
+- Discovery Engine
+- Validation Engine
+- Installer
+- Logger
+- Utilities
+- Engine
+
+---
+
+## Manifest Engine
+
+- Parser
+- Validator
+- Loader
+
+---
+
+## Modules
+
+- System
+- Databases
+- Security
+- Monitoring
+- Backup
+- Networking
+- Runtime
+- CI
+
+---
+
+## Providers
+
+- Google Cloud
+- ICN
+- AWS
+- Azure
+- Hetzner
+- Local
+
+---
+
+## Templates
+
+- Node
+- React
+- Vue
+- Laravel
+- Django
+- FastAPI
+- Microservices
+
+---
+
+# Development Workflow
+
+NCP is developed using a real production workflow.
+
+```text
+Mac Development Machine
+
+↓
+
+GitHub
+
+↓
+
+Google Cloud Ubuntu VM
+
+↓
+
+NCP Validation
+
+↓
+
+Production Ready
+```
+
+Every feature is tested on an actual Ubuntu server before it is merged.
+
+---
+
+# Roadmap
+
+## v0.1-alpha
+
+✅ CLI
+
+✅ Discovery Engine
+
+✅ Manifest Parser
+
+✅ Manifest Validator
+
+✅ Doctor Command
+
+---
+
+## v0.1-beta
+
+- Installer Engine
+- Dependency Resolver
+- Lifecycle Engine
+- Module Executor
+
+---
+
+## v0.2
+
+Production system modules
+
+- Git
+- Curl
+- Build Tools
+- Docker
+- Nginx
+- Firewall
+- SSH
+- Fail2Ban
+
+---
+
+## v0.3
+
+Databases
+
+- PostgreSQL
+- MongoDB
+- MariaDB
+- MySQL
+- Redis
+
+Runtime environments
+
+- Node.js
+- Python
+- PHP
+- Java
+- .NET
+
+---
+
+## v0.4
+
+Application Templates
+
+- React
+- Vue
+- Laravel
+- Django
+- FastAPI
+- Microservices
+
+---
+
+## v0.5
+
+Cloud Providers
+
+- Google Cloud
+- ICN
+- AWS
+- Azure
+- Hetzner
+- Local
+
+---
+
+## v1.0
+
+Production Release
+
+Features include:
+
+- Multi-provider deployments
+- Automated provisioning
+- Infrastructure validation
+- Application templates
+- Deployment orchestration
+- Monitoring
+- Backup
+- Security hardening
+
+---
+
+# Current Status
+
+Version
+
+```
+v0.1-alpha
+```
+
+Implemented
+
+- ✅ CLI
+- ✅ Module Discovery
+- ✅ Provider Discovery
+- ✅ Template Discovery
+- ✅ Manifest Parser
+- ✅ Manifest Validator
+- ✅ Doctor Command
+
+In Progress
+
+- ⏳ Dependency Resolver
+- ⏳ Lifecycle Engine
+- ⏳ Installer Engine
+
+Planned
+
+- Module Installation
+- Provider Drivers
+- Template Deployment
+
+---
+
+# Long-Term Vision
+
+NexGen Cloud Platform is the internal infrastructure foundation for every NexGen product.
+
+Including:
+
+- AfriX
+- AfriRail
+- KaliSukaar
+- NexGen Internal Services
+- Client Infrastructure
+
+The goal is to make infrastructure deployment predictable, portable, secure, and fully reproducible regardless of the underlying cloud provider.
+
+---
+
+# License
+
+This project is licensed under the MIT License.

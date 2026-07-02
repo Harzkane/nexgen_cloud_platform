@@ -1,18 +1,17 @@
 #!/usr/bin/env bash
-# NCP Module: git — Verify Hook
-# Category: system
-# Version: $(cat "$(dirname "$0")/VERSION")
+# NexGen Cloud Platform (NCP)
+# Module: git — Verify Hook
+# ============================================================
+
 set -euo pipefail
 
-MODULE_NAME="git"
-MODULE_DIR="$(dirname "$(realpath "$0")")"
-MODULE_VERSION="$(cat "$MODULE_DIR/VERSION")"
+MODULE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$MODULE_DIR/../../.." && pwd)"
 
-echo "[$MODULE_NAME] Running verify (v$MODULE_VERSION)..."
+source "$PROJECT_ROOT/core/platform/packages.sh"
 
-# ─────────────────────────────────────────
-# TODO: Implement verify logic for git
-# ─────────────────────────────────────────
-
-echo "[$MODULE_NAME] Verify complete."
-exit 0
+if is_cmd_available "git" && git --version >/dev/null 2>&1; then
+    exit 0
+else
+    exit 1
+fi

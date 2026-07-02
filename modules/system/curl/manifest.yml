@@ -1,0 +1,89 @@
+# ============================================================
+# NexGen Cloud Platform (NCP)
+# Component Manifest
+# Schema Version: ncp.io/v1
+# ============================================================
+
+apiVersion: ncp.io/v1
+kind: Module
+
+# ------------------------------------------------------------
+# Component Identity
+# ------------------------------------------------------------
+
+id: curl
+name: curl
+displayName: Curl
+
+version: 0.1.0
+status: stable
+
+category: system
+
+description: >
+  NCP module: curl
+
+maintainer: NexGen Tech
+license: MIT
+
+# ------------------------------------------------------------
+# Installation
+# ------------------------------------------------------------
+
+installOrder: 50
+
+dependencies: []
+
+# ------------------------------------------------------------
+# Compatibility
+# ------------------------------------------------------------
+
+compatibility:
+
+  ubuntu:
+    - "22.04"
+    - "24.04"
+
+# ------------------------------------------------------------
+# Lifecycle
+# ------------------------------------------------------------
+
+lifecycle:
+
+  install:
+    script: install.sh
+    requiresSudo: true
+
+  verify:
+    script: verify.sh
+
+  status:
+    script: status.sh
+
+  configure:
+    script: configure.sh
+
+  upgrade:
+    script: upgrade.sh
+
+  uninstall:
+    script: uninstall.sh
+
+# ------------------------------------------------------------
+# Capabilities
+# ------------------------------------------------------------
+
+capabilities:
+  - install
+  - verify
+  - configure
+  - upgrade
+  - uninstall
+
+# ------------------------------------------------------------
+# Tags
+# ------------------------------------------------------------
+
+tags:
+  - system
+  - curl

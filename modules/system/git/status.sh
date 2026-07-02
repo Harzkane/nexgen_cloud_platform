@@ -1,18 +1,23 @@
 #!/usr/bin/env bash
-# NCP Module: git — Status Hook
-# Category: system
-# Version: $(cat "$(dirname "$0")/VERSION")
+# NexGen Cloud Platform (NCP)
+# Module: git — Status Hook
+# ============================================================
+
 set -euo pipefail
 
-MODULE_NAME="git"
-MODULE_DIR="$(dirname "$(realpath "$0")")"
-MODULE_VERSION="$(cat "$MODULE_DIR/VERSION")"
+MODULE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$MODULE_DIR/../../.." && pwd)"
 
-echo "[$MODULE_NAME] Running status (v$MODULE_VERSION)..."
+source "$PROJECT_ROOT/core/state/state.sh"
+source "$PROJECT_ROOT/core/platform/packages.sh"
 
-# ─────────────────────────────────────────
-# TODO: Implement status logic for git
-# ─────────────────────────────────────────
+if is_installed "git"; then
+    exit 0
+fi
 
-echo "[$MODULE_NAME] Status complete."
-exit 0
+if is_cmd_available "git"; then
+    mark_installed "git" "0.1.0"
+    exit 0
+fi
+
+exit 1

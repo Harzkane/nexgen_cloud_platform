@@ -1,18 +1,19 @@
 #!/usr/bin/env bash
-# NCP Module: nginx — Verify Hook
-# Category: system
-# Version: $(cat "$(dirname "$0")/VERSION")
+# NexGen Cloud Platform (NCP)
+# Module: nginx — Verify Hook
+# ============================================================
+
 set -euo pipefail
 
-MODULE_NAME="nginx"
-MODULE_DIR="$(dirname "$(realpath "$0")")"
-MODULE_VERSION="$(cat "$MODULE_DIR/VERSION")"
+MODULE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$MODULE_DIR/../../.." && pwd)"
 
-echo "[$MODULE_NAME] Running verify (v$MODULE_VERSION)..."
+source "$PROJECT_ROOT/core/platform/packages.sh"
+source "$PROJECT_ROOT/core/platform/os.sh"
 
-# ─────────────────────────────────────────
-# TODO: Implement verify logic for nginx
-# ─────────────────────────────────────────
-
-echo "[$MODULE_NAME] Verify complete."
-exit 0
+if is_cmd_available "nginx"; then
+    if nginx -t >/dev/null 2>&1 || [ "$(get_os_name)" = "Darwin" ]; then
+        exit 0
+    fi
+fi
+exit 1

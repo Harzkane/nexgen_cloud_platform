@@ -1,18 +1,20 @@
 #!/usr/bin/env bash
-# NCP Module: curl — Install Hook
-# Category: system
-# Version: $(cat "$(dirname "$0")/VERSION")
+# NexGen Cloud Platform (NCP)
+# Module: curl — Install Hook
+# ============================================================
+
 set -euo pipefail
 
-MODULE_NAME="curl"
-MODULE_DIR="$(dirname "$(realpath "$0")")"
-MODULE_VERSION="$(cat "$MODULE_DIR/VERSION")"
+MODULE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$MODULE_DIR/../../.." && pwd)"
 
-echo "[$MODULE_NAME] Running install (v$MODULE_VERSION)..."
+source "$PROJECT_ROOT/core/platform/resources.sh"
+source "$PROJECT_ROOT/core/state/state.sh"
 
-# ─────────────────────────────────────────
-# TODO: Implement install logic for curl
-# ─────────────────────────────────────────
-
-echo "[$MODULE_NAME] Install complete."
-exit 0
+if ensure_package "curl"; then
+    mark_installed "curl" "0.1.0"
+    exit 0
+else
+    mark_failed "curl" "Declarative package ensure failed"
+    exit 1
+fi

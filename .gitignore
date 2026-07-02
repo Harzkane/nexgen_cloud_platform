@@ -34,3 +34,7 @@ env/
 .env.production.local
 *.pem
 *.key
+
+# NCP Workspace & Fixtures
+workspace/
+tests/fixtures/
