@@ -15,7 +15,135 @@ source "$PROJECT_ROOT/core/discovery/templates.sh"
 source "$PROJECT_ROOT/core/validator/environment.sh"
 source "$PROJECT_ROOT/core/component/resolver.sh"
 
+source "$PROJECT_ROOT/core/platform/os.sh"
+
 run_doctor() {
+    local full_check=false
+    if [ "${1:-}" = "--full" ]; then
+        full_check=true
+    fi
+
+    if [ "$full_check" = "true" ]; then
+        echo
+        echo "==========================================="
+        echo " NCP Environment Self-Check (--full)"
+        echo "==========================================="
+        echo
+
+        local has_errors=0
+
+        # 1. OS check
+        local os_pretty
+        os_pretty=$(get_os_name)
+        echo "  ✓ $os_pretty"
+
+        # 2. Bash check
+        echo "  ✓ Bash ${BASH_VERSION}"
+
+        # 3. Package Manager
+        if command -v apt-get >/dev/null 2>&1; then
+            echo "  ✓ apt detected"
+        elif command -v brew >/dev/null 2>&1; then
+            echo "  ✓ Homebrew detected"
+        else
+            echo "  ! No supported package manager detected (apt/brew)"
+            has_errors=1
+        fi
+
+        # 4. Init system
+        local init_sys
+        init_sys=$(get_init_system)
+        if [ "$init_sys" != "unknown" ]; then
+            echo "  ✓ $init_sys detected"
+        else
+            echo "  ! No supported init system detected (systemd/launchd)"
+        fi
+
+        # 5. Workspace permissions
+        if [ -w "$PROJECT_ROOT" ]; then
+            echo "  ✓ Workspace writable"
+        else
+            echo "  ! Workspace is not writable"
+            has_errors=1
+        fi
+
+        # 6. State store
+        local state_dir="${NCP_STATE_STORE_DIR:-${PROJECT_ROOT}/workspace/state}"
+        mkdir -p "$state_dir"
+        if [ -w "$state_dir" ]; then
+            echo "  ✓ State store OK"
+        else
+            echo "  ! State store not writable"
+            has_errors=1
+        fi
+
+        # 7. Session store
+        local session_dir="${NCP_SESSIONS_DIR:-${PROJECT_ROOT}/workspace/sessions}"
+        mkdir -p "$session_dir"
+        if [ -w "$session_dir" ]; then
+            echo "  ✓ Session store OK"
+        else
+            echo "  ! Session store not writable"
+            has_errors=1
+        fi
+
+        # 8. Required Commands
+        local req_cmds=("git" "curl")
+        local cmd
+        local missing_cmds=()
+        for cmd in "${req_cmds[@]}"; do
+            if ! command -v "$cmd" >/dev/null 2>&1; then
+                missing_cmds+=("$cmd")
+            fi
+        done
+        if [ ${#missing_cmds[@]} -eq 0 ]; then
+            echo "  ✓ Required tools present (git, curl)"
+        else
+            echo "  ! Missing required tools: ${missing_cmds[*]}"
+            has_errors=1
+        fi
+
+        # 9. Providers and Templates loaded
+        local provider_count
+        provider_count=$(discover_providers | wc -l)
+        local template_count
+        template_count=$(discover_templates | wc -l)
+        if [ "$provider_count" -gt 0 ]; then
+            echo "  ✓ Providers loaded ($provider_count)"
+        else
+            echo "  ! No providers found"
+        fi
+
+        # 10. Modules discovery
+        local modules
+        modules=$(discover_modules)
+        local registered_count=0
+        local module_path
+        while IFS= read -r module_path; do
+            [ -z "$module_path" ] && continue
+            if register_component "$module_path" >/dev/null 2>&1; then
+                registered_count=$((registered_count + 1))
+            fi
+        done <<< "$modules"
+
+        if [ "$registered_count" -gt 0 ]; then
+            echo "  ✓ Modules discovered ($registered_count)"
+        else
+            echo "  ! No valid modules discovered"
+            has_errors=1
+        fi
+
+        echo
+        if [ "$has_errors" -eq 0 ]; then
+            success "Environment Ready"
+            exit 0
+        else
+            error "Environment check failed with errors."
+            exit 1
+        fi
+    fi
+
+    # Standard discovery doctor (original behavior)
     echo
     echo "==========================================="
     echo " NexGen Cloud Platform"
@@ -88,4 +216,4 @@ run_doctor() {
     fi
 }
 
-run_doctor
+run_doctor "$@"
