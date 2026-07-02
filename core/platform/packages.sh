@@ -75,7 +75,7 @@ install_package() {
             brew install "$pkg"
             ;;
         apt)
-            if dpkg -s "$pkg" >/dev/null 2>&1; then
+            if dpkg -s "$pkg" 2>/dev/null | grep -q "Status: install ok installed"; then
                 log_info "Package '$pkg' is already installed via apt."
                 return 0
             fi

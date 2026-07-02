@@ -37,6 +37,20 @@ _write_state_val() {
     fi
     echo "${key}=${val}" >> "$temp_sf"
     mv "$temp_sf" "$sf"
+
+    # Auto-heal permissions if run under sudo/root
+    if [ "$(id -u)" = "0" ]; then
+        local parent_dir
+        parent_dir=$(dirname "$sf")
+        local owner
+        if [ "$(uname -s)" = "Darwin" ]; then
+            owner=$(stat -f '%u:%g' "$parent_dir")
+        else
+            owner=$(stat -c '%u:%g' "$parent_dir")
+        fi
+        chown "$owner" "$sf"
+        chmod 664 "$sf"
+    fi
 }
 
 # Read a state value for a component
